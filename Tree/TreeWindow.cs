@@ -2,7 +2,7 @@
 
 namespace ChristmasTree
 {
-    public class TreeWindow
+    public static class TreeWindow
     {
         private const int SWP_NOSIZE = 0x0001;
         /// <summary>

@@ -4,23 +4,32 @@ namespace ChristmasTree.PictureObjects
 {
     public class Tree : IPrintable
     {
+        /// <summary> Величина увеличения ширины треугольника елки.</summary>
         private const int SizeIncrementWidthTriangle = 4;
+        /// <summary> Величина увеличения высоты треуголника елки.</summary>
         private const int SizeIncrementHeightTriangle = 2;
-
+        /// <summary> Максимальное случайное значение, чем больше значение, тем меньше будет фонариков.</summary>
         private const int RandomMaxValue = 5;
+        /// <summary> Высота относительно треугольника елки, с которой начинается мишура.</summary>
         private const int TinselStartY = 3;
 
         private const ConsoleColor ColorTree = ConsoleColor.Green;
         private const ConsoleColor ColorTrunk = ConsoleColor.DarkGray;
 
+        /// <summary> Половина ширины верхней части тругольника, так как вычисление точек идет от центра.</summary>
         private int halfWidthTopTriangle = 7;
+        /// <summary> Высота треугольника елки.</summary>
         private int heightTriangle = 9;
+        /// <summary> Высота мишуры.</summary>
         private int tinselHeight = 4;
-        private int currentTriangleStartY;
+        /// <summary> Текущая ордината.</summary>
+        private int currentY;
 
+        /// <summary> Количество треугольников в елке.</summary>
         public int TriangleCount { get; set; }
+        /// <summary> Ордината начала елки.</summary>
         public int StartY { get; set; }
-        public int TrunkHeight { get; private set; }
+        public int TrunkHeight => TriangleCount * 2;
         public int TreeHeight { get; private set; }
         public int TrunkWidth => TrunkHeight + TrunkHeight / 2;
 
@@ -28,7 +37,6 @@ namespace ChristmasTree.PictureObjects
         {
             StartY = startY;
             TriangleCount = triangleCount;
-            TrunkHeight = triangleCount * 2;
         }
 
         public void Print()
@@ -38,7 +46,7 @@ namespace ChristmasTree.PictureObjects
 
             var tinsels = new List<Tinsel>();
             var tinsel = new Tinsel();
-            currentTriangleStartY = StartY;
+            currentY = StartY;
 
             var indent = 0;
             int triangleCount = 0;
@@ -48,17 +56,18 @@ namespace ChristmasTree.PictureObjects
                 {
                     for (int i = TreeWindow.CenterWidth - indent; i < TreeWindow.CenterWidth + 1 + indent; i++)
                     {
+                        //случайное расположение фонариков
                         var randomNumber = random.Next(0, RandomMaxValue);
-
+                        //вводим ограничения, чтобы фонарики не распологались слишком близко друг к другу
                         if (randomNumber == RandomMaxValue - 1 && j != 0
-                            && !Picture.Flashlights.Any(f => Math.Abs(f.Point.X - i) <= 2 && f.Point.Y == currentTriangleStartY + j
-                            || Math.Abs(currentTriangleStartY + j - f.Point.Y) <= 1 && f.Point.X == i))
+                            && !Picture.OnePointPictures.Any(f => Math.Abs(f.Point.X - i) <= 2 && f.Point.Y == currentY + j
+                            || Math.Abs(currentY + j - f.Point.Y) <= 1 && f.Point.X == i))
                         {
-                            Picture.Flashlights.Add(new Flashlight(new Point(i, currentTriangleStartY + j)));
+                            Picture.OnePointPictures.Add(new Flashlight(new Point(i, currentY + j)));
                         }
                         else
                         {
-                            PrintHelper.PrintPicturePoint(i, currentTriangleStartY + j);
+                            PrintHelper.PrintPicturePoint(i, currentY + j);
                         }
                     }
 
@@ -78,19 +87,20 @@ namespace ChristmasTree.PictureObjects
                 var sizeIncrementHeightTriangle = SizeIncrementHeightTriangle * triangleCount;
                 tinselHeight += sizeIncrementHeightTriangle;
 
-                currentTriangleStartY += heightTriangle;
+                currentY += heightTriangle;
                 heightTriangle += sizeIncrementHeightTriangle;
 
                 indent = halfWidthTopTriangle;
                 halfWidthTopTriangle += SizeIncrementWidthTriangle;
             }
 
-            TreeHeight = currentTriangleStartY - StartY;
+            TreeHeight = currentY - StartY;
             foreach (var tin in tinsels)
                 tin.Print();
             PrintTrunk();
         }
 
+        /// <summary> Вывод столба.</summary>
         private void PrintTrunk()
         {
             Console.ForegroundColor = ColorTrunk;
@@ -103,6 +113,12 @@ namespace ChristmasTree.PictureObjects
             }
         }
 
+        /// <summary>
+        /// Устанавливаем начальную или конечную точку мишуры. 
+        /// </summary>
+        /// <param name="tinsel"> Объект мишуры.</param>
+        /// <param name="yIndex"> Текущая ордината.</param>
+        /// <param name="indent"> Отступ.</param>
         private void SetStartEndPointsTinsel(Tinsel tinsel, int yIndex, int indent)
         {
             if (yIndex == TinselStartY)
@@ -115,13 +131,21 @@ namespace ChristmasTree.PictureObjects
             }
         }
 
+        /// <summary>
+        /// Получаем начальную или конечную точку мишуры.
+        /// </summary>
+        /// <param name="isStart"> Начальная или конечная точка.</param>
+        /// <param name="tinsel"> Объект мишуры.</param>
+        /// <param name="indent"> Отступ.</param>
+        /// <param name="yIndex"> Текущая ордината.</param>
+        /// <returns> Полученная точка.</returns>
         private Point GetStartEndPointTinsel(bool isStart, Tinsel tinsel, int indent, int yIndex)
         {
             var indentTinsel = indent;
             if (isStart == tinsel.TinselLeftRight)
                 indentTinsel = 0 - indentTinsel;
 
-            return new Point(TreeWindow.CenterWidth + indentTinsel, currentTriangleStartY + yIndex);
+            return new Point(TreeWindow.CenterWidth + indentTinsel, currentY + yIndex);
         }
     }
 }

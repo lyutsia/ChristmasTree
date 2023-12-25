@@ -5,7 +5,7 @@
         public static void PrintPicturePoint(int x, int y)
         {
             //чтобы снежинки не перекрывали основные рисунки
-            Picture.Flashlights.RemoveAll(s => s.Point.X == x && s.Point.Y == y);
+            Picture.OnePointPictures.RemoveAll(s => s.Point.X == x && s.Point.Y == y);
             Print(x, y);
         }
 

@@ -4,12 +4,15 @@ namespace ChristmasTree.PictureObjects
 {
     public class Tinsel : IPrintable
     {
+        /// <summary> Координаты точки начала мишуры.</summary>
         public Point StartPoint { get; set; }
+
+        /// <summary> Координаты точки конца мишуры.</summary>
         public Point EndPoint { get; set; }
+
         public ConsoleColor Color { get; set; } = ConsoleColor.DarkMagenta;
-        /// <summary>
-        /// мишура идет с лева на право или с права на лево
-        /// </summary>
+
+        /// <summary> Мишура идет с лева на право или с права на лево.</summary>
         public bool TinselLeftRight { get; set; } = true;
 
         public Tinsel() { }
@@ -23,11 +26,11 @@ namespace ChristmasTree.PictureObjects
         {
             Console.ForegroundColor = Color;
 
-            var difference = Math.Abs(EndPoint.X - StartPoint.X) / (EndPoint.Y - StartPoint.Y);
+            var widthTinsel = Math.Abs(EndPoint.X - StartPoint.X) / (EndPoint.Y - StartPoint.Y);
             var step = 1;
             if (!TinselLeftRight)
             {
-                difference = 0 - difference;
+                widthTinsel = 0 - widthTinsel;
                 step = 0 - step;
             }
 
@@ -35,22 +38,21 @@ namespace ChristmasTree.PictureObjects
             var y = StartPoint.Y;
             while (y <= EndPoint.Y)
             {
-                for (var i = x; GetCondition(x, i, difference, TinselLeftRight); i += step)
+                for (var i = x; GetCondition(x, i, widthTinsel); i += step)
                     PrintHelper.PrintPicturePoint(i, y);
-                x += difference;
+                x += widthTinsel;
                 y++;
             }
         }
 
         /// <summary>
-        /// условие окончания цикла
+        /// Условие окончания цикла.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="index"></param>
-        /// <param name="difference"></param>
-        /// <param name="increment"></param>
-        /// <returns></returns>
-        private bool GetCondition(int x, int index, int difference, bool increment) => increment ? index < x + difference && index <= EndPoint.X
-                                                                                        : index > x + difference && index >= EndPoint.X;
+        /// <param name="startX"> Начало вывода мишуры на текущей высоте.</param>
+        /// <param name="index"> Текущий индекс в цикле.</param>
+        /// <param name="widthTinsel"> Ширина мишуры.</param>
+        /// <returns> Продолжается ли цикл.</returns>
+        private bool GetCondition(int startX, int index, int widthTinsel) => TinselLeftRight ? index < startX + widthTinsel && index <= EndPoint.X
+                                                                                        : index > startX + widthTinsel && index >= EndPoint.X;
     }
 }

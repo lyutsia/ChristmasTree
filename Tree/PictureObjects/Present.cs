@@ -4,44 +4,48 @@ namespace ChristmasTree.PictureObjects
 {
     public class Present : IPrintable
     {
-        /// <summary>
-        /// начальная и конечная ордината банта на подарке
-        /// </summary>
+        /// <summary> Начальная и конечная ордината банта на подарке.</summary>
         private int bowYStart, bowYEnd;
-        /// <summary>
-        /// начальная и конечная абцисса банта на подарке
-        /// </summary>
+
+        /// <summary> Начальная и конечная абцисса банта на подарке.</summary>
         private int bowXStart, bowXEnd;
 
         public int PresentHeight { get; set; }
+
         public int PresentWidth => PresentHeight * 2;
-        public int BowHeight { get; private set; }
+
+        public int BowHeight => PresentHeight - 1;
 
         public ConsoleColor ColorPresent { get; set; }
+
         public ConsoleColor ColorBow { get; set; }
-        /// <summary>
-        /// Левая верхняя точка, начало области вывода подарка
-        /// </summary>
+
+        /// <summary> Левая верхняя точка, начало области вывода подарка.</summary>
         public Point StartPoint { get; set; }
 
-        public Present(Point startPoint, int height, bool isLeft, ConsoleColor colorPresent, ConsoleColor colorBow)
+        public Present(int height, ConsoleColor colorPresent, ConsoleColor colorBow)
         {
             ColorPresent = colorPresent;
             ColorBow = colorBow;
             PresentHeight = height;
-            BowHeight = height - 1;
 
-            var bowHeight = height / 3;
-            bowYStart = (height - bowHeight) / 2;
-            bowYEnd = bowYStart + bowHeight;
+            SetBowCoordinatesInPresent();
+        }
 
-            bowXStart = height - bowHeight;
-            bowXEnd = bowXStart + bowHeight * 2;
-
-            startPoint.Y = startPoint.Y - BowHeight;
-            if (isLeft)
-                startPoint.X -= PresentWidth;
+        public Present(Point startPoint, int height, ConsoleColor colorPresent, ConsoleColor colorBow) : this(height, colorPresent, colorBow)
+        {
             StartPoint = startPoint;
+        }
+
+        /// <summary> Устанавливаем координаты начала и конца банта на подарке.</summary>
+        private void SetBowCoordinatesInPresent()
+        {
+            var bowHeightInPresent = PresentHeight / 3;
+            bowYStart = (PresentHeight - bowHeightInPresent) / 2;
+            bowYEnd = bowYStart + bowHeightInPresent;
+
+            bowXStart = PresentHeight - bowHeightInPresent;
+            bowXEnd = bowXStart + bowHeightInPresent * 2;
         }
 
         public void Print()
@@ -61,6 +65,7 @@ namespace ChristmasTree.PictureObjects
             }
         }
 
+        /// <summary> Вывод банта.</summary>
         private void PrintBow()
         {
             Console.ForegroundColor = ColorBow;

@@ -1,5 +1,7 @@
 ﻿using ChristmasTree;
+using ChristmasTree.BuilderPicture;
 
 TreeWindow.ChangeWindowSizeAndPosition();
-var picture = new Picture();
-picture.Display();
+var christmasTreePictureBuilder = new ChristmasTreePictureBuilder();
+var picturePrinter = new PicturePrinter(christmasTreePictureBuilder);
+picturePrinter.Display();

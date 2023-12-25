@@ -2,15 +2,22 @@
 
 namespace ChristmasTree.PictureObjects
 {
-    public class Snowflake : Flashlight
+    public class Snowflake : OnePointPicture, IPrintable
+
     {
         private const ConsoleColor ColorSnow = ConsoleColor.White;
-        public Snowflake(Point point) : base(point)
-        { }
-        public Snowflake(int x, int y) : base(x, y)
-        { }
 
-        public override void Print()
+        public Snowflake(Point point)
+        {
+            Point = point;
+        }
+
+        public Snowflake(int x, int y)
+        {
+            Point = new Point(x, y);
+        }
+
+        public void Print()
         {
             var random = new Random();
             if (random.Next(0, 2) == 0)

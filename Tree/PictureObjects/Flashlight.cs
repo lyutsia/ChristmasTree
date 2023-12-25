@@ -2,21 +2,19 @@
 
 namespace ChristmasTree.PictureObjects
 {
-    public class Flashlight : IPrintable
+    public class Flashlight : OnePointPicture, IPrintable
     {
-        public Point Point { get; set; }
-        public ConsoleColor Color { get; set; }
-
         public Flashlight(Point point)
         {
             Point = point;
         }
+
         public Flashlight(int x, int y)
         {
             Point = new Point(x, y);
         }
 
-        public virtual void Print()
+        public void Print()
         {
             var random = new Random();
             int colorNumber;

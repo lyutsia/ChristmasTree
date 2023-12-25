@@ -5,19 +5,21 @@ namespace ChristmasTree.PictureObjects
     public class SnowBall : IPrintable
     {
         private const ConsoleColor ColorSnow = ConsoleColor.White;
+
         /// <summary>
-        /// количество строк в центре, когда ширина максимальная
-        /// сначала идет увеличение до достижения максимальной ширины,затем уменьшение
+        /// Количество строк в центре, когда ширина максимальная.
+        /// Сначала идет увеличение до достижения максимальной ширины,затем уменьшение.
         /// </summary>
         private int rowCountInCenterWithMaxWidth;
+
+        /// <summary> Левая верзняя точка.</summary>
         public Point StartPoint { get; set; }
         public int Height { get; set; }
-        public int Width { get; private set; }
+        public int Width => Height * 2;// чтобы сохранять примерные пропорции окружности
 
         public SnowBall(int height)
         {
             Height = height;
-            Width = height * 2;// чтобы сохранять примерные пропорции окружности
             rowCountInCenterWithMaxWidth = (height % 2 == 0) ? 2 : 3;
         }
 
